@@ -9,7 +9,7 @@ class Product
             'items' => [
                 [
                     'id' => 1,
-                    'name' => 'PC Văn phòng Intel Core i3 / RAM 8GB / SSD 256GB',
+                    'name' => 'PC Văn phòng   / RAM / SSD ',
                     'price' => 5000000,
                     'old_price' => 6500000,
                     'description' => 'Cấu hình PC văn phòng cơ bản, phù hợp cho học tập, soạn thảo văn bản, lướt web.',
@@ -47,6 +47,27 @@ class Product
             'anchor' => 'segment-hiend',
             'title' => 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP: ĐẶC QUYỀN TỐI THƯỢNG',
             'items' => [
+                [
+                    'id' => 5,
+                    'name' => 'PC Hi-end Core i9 / RAM 64GB / RTX 4090 / SSD 2TB',
+                    'price' => 85000000,
+                    'old_price' => 92000000,
+                    'description' => 'Cấu hình đỉnh cao cho dựng phim 4K, AI training, render nặng và gaming 4K 144Hz.',
+                ],
+                [
+                    'id' => 5,
+                    'name' => 'PC Hi-end Core i9 / RAM 64GB / RTX 4090 / SSD 2TB',
+                    'price' => 85000000,
+                    'old_price' => 92000000,
+                    'description' => 'Cấu hình đỉnh cao cho dựng phim 4K, AI training, render nặng và gaming 4K 144Hz.',
+                ],
+                [
+                    'id' => 5,
+                    'name' => 'PC Hi-end Core i9 / RAM 64GB / RTX 4090 / SSD 2TB',
+                    'price' => 85000000,
+                    'old_price' => 92000000,
+                    'description' => 'Cấu hình đỉnh cao cho dựng phim 4K, AI training, render nặng và gaming 4K 144Hz.',
+                ],
                 [
                     'id' => 5,
                     'name' => 'PC Hi-end Core i9 / RAM 64GB / RTX 4090 / SSD 2TB',
