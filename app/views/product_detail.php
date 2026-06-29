@@ -2,6 +2,8 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<?php /** @var string $pageTitle */ ?>
+<?php /** @var array|null $product */ ?>
 <title><?= htmlspecialchars($pageTitle) ?></title>
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
