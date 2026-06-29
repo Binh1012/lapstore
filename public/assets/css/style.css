@@ -298,7 +298,7 @@ body { font-family: Arial, Helvetica, sans-serif; background:#eee; }
 .product-section-title {
   font-size:22px;
   margin-bottom:18px;
-  padding-left:100px;
+  padding-left:350px;
 }
 .product-price {
   font-size:16px;
@@ -377,11 +377,11 @@ body { font-family: Arial, Helvetica, sans-serif; background:#eee; }
   font-size:15px;
 }
 .not-found {
-  max-width:1280px;
-  margin:60px auto;
+  max-width:12800px;
+  margin:600px auto;
   text-align:center;
-  font-size:18px;
-  color:#777;
+  font-size:180px;
+  color:#7777;
 }
 
 @media (max-width:900px){
