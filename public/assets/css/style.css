@@ -524,6 +524,60 @@ main {
   background: var(--primary-dark);
 }
 
+/* ===== BẢNG THÔNG SỐ CHI TIẾT (trang product-detail) ===== */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+.spec-table tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.spec-table tr:last-child {
+  border-bottom: 0;
+}
+
+.spec-table th,
+.spec-table td {
+  text-align: left;
+  padding: 10px 8px;
+  font-size: 14px;
+}
+
+.spec-table th {
+  width: 160px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.spec-table td {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.detail-actions .buy-btn {
+  margin: 0;
+}
+
+.source-link {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
 .breadcrumb {
   padding: 18px 0 8px;
   color: var(--muted);

@@ -19,20 +19,20 @@ const priceSegments = [
     key: 'segment-office',
     title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
     minPrice: 0,
-    maxPrice: 29999999,
+    maxPrice: 29990000,
     banner: 'assets/img/banner-a.png'
   },
   {
     key: 'segment-design',
     title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
     minPrice: 30000000,
-    maxPrice: 79999999,
+    maxPrice: 60000000,
     banner: 'assets/img/banner-b.png'
   },
   {
     key: 'segment-hiend',
     title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
-    minPrice: 80000000,
+    minPrice: 60000001,
     maxPrice: Infinity,
     banner: 'assets/img/banner-c.png'
   }
@@ -69,6 +69,52 @@ function loadHeader() {
 }
 
 /* Lấy dữ liệu sản phẩm từ "database ảo" (file JSON) */
+/* Chuyển badges dạng mảng chuỗi thành mảng {type, text} để tái dùng giao diện cũ */
+function normalizeBadges(rawBadges) {
+  const colorCycle = ['red', 'blue', 'yellow'];
+  return (rawBadges || []).map((text, index) => ({
+    type: colorCycle[index % colorCycle.length],
+    text
+  }));
+}
+
+/* Gom các thông số cpu/gpu/ram/storage/display/os/accessories thành mảng spec-chip, bỏ giá trị rỗng */
+function buildSpecs(raw) {
+  return [raw.cpu, raw.gpu, raw.ram, raw.storage, raw.display, raw.accessories].filter((value) => value && value.trim() !== '');
+}
+
+/* Chuẩn hoá 1 sản phẩm từ dữ liệu thật về đúng field mà giao diện đang dùng */
+function normalizeProduct(raw, index) {
+  return {
+    id: index,
+    name: raw.name,
+    brand: raw.brand,
+    category: raw.category,
+    cpu: raw.cpu || '',
+    gpu: raw.gpu || '',
+    ram: raw.ram || '',
+    storage: raw.storage || '',
+    display: raw.display || '',
+    accessories: raw.accessories || '',
+    price: raw.price,
+    oldPrice: raw.original_price && raw.original_price !== raw.price ? raw.original_price : null,
+    description: [raw.category, raw.cpu, raw.ram, raw.storage].filter(Boolean).join(' • '),
+    image: raw.image,
+    os: raw.os || '',
+    aiBadge: false,
+    warrantyBadge: null,
+    badges: normalizeBadges(raw.badges),
+    status: raw.status || 'Còn hàng',
+    specs: buildSpecs(raw),
+    giftCount: 0,
+    promoCount: 0,
+    configCount: 0,
+    rating: raw.rating != null ? raw.rating : 4.5,
+    sold: raw.sold != null ? raw.sold : 0,
+    url: raw.url || ''
+  };
+}
+
 function loadProductData() {
   return fetch('assets/data/products.json')
     .then((response) => {
@@ -78,7 +124,7 @@ function loadProductData() {
       return response.json();
     })
     .then((data) => {
-      productData = data;
+      productData = data.map((raw, index) => normalizeProduct(raw, index));
     })
     .catch((error) => {
       console.error('Lỗi tải dữ liệu sản phẩm:', error);
@@ -235,6 +281,18 @@ function renderProductDetail() {
   const warrantyBadge = product.warrantyBadge || null;
   const aiBadge = Boolean(product.aiBadge);
 
+  const specRows = [
+    { label: 'Danh mục', value: product.category },
+    { label: 'Hãng', value: product.brand },
+    { label: 'CPU', value: product.cpu },
+    { label: 'GPU', value: product.gpu },
+    { label: 'RAM', value: product.ram },
+    { label: 'Ổ cứng', value: product.storage },
+    { label: 'Màn hình', value: product.display },
+    { label: 'Hệ điều hành', value: product.os },
+    { label: 'Phụ kiện', value: product.accessories }
+  ].filter((row) => row.value && row.value.trim() !== '');
+
   container.innerHTML = `
     <div class="product-detail-image">
       <img src="${product.image}" alt="${product.name}" />
@@ -269,8 +327,23 @@ function renderProductDetail() {
       <p class="rating-row">⭐ ${rating} • Đã bán ${sold}</p>
       <p class="stock-status"><span class="stock-dot">✓</span> ${status}</p>
 
+      ${specRows.length ? `
+        <table class="spec-table">
+          ${specRows.map((row) => `
+            <tr>
+              <th>${row.label}</th>
+              <td>${row.value}</td>
+            </tr>
+          `).join('')}
+        </table>
+      ` : ''}
+
       <p>${product.description}</p>
-      <button class="buy-btn">Mua ngay</button>
+
+      <div class="detail-actions">
+        <button class="buy-btn">Mua ngay</button>
+        ${product.url ? `<a class="source-link" href="${product.url}" target="_blank" rel="noopener">Xem trang gốc ↗</a>` : ''}
+      </div>
     </div>
   `;
 }
