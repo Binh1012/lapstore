@@ -1,125 +1,46 @@
-const productData = [
+let productData = [];
+
+const brandLogos = [
+  { name: 'Lenovo', file: 'lenovo.png' },
+  { name: 'Asus', file: 'asus.png' },
+  { name: 'HP', file: 'hp.png' },
+  { name: 'MSI', file: 'msi.png' },
+  { name: 'Dell', file: 'dell.png' },
+  { name: 'Acer', file: 'acer.png' },
+  { name: 'MacBook', file: 'macbook.png' },
+  { name: 'Surface', file: 'surface.png' },
+  { name: 'LG', file: 'lg.png' },
+  { name: 'Samsung', file: 'samsung.png' }
+];
+
+/* Định nghĩa phân khúc dựa theo khoảng giá (không cần gắn tay field "section" nữa) */
+const priceSegments = [
   {
-    id: 1,
-    name: 'PC Văn phòng / RAM / SSD',
-    price: 5000000,
-    oldPrice: 6500000,
-    description: 'Cấu hình PC văn phòng cơ bản, phù hợp cho học tập, soạn thảo văn bản, lướt web.',
-    section: 'segment-office',
-    sectionTitle: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
-    image: 'assets/img/banner-khoidau.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'Văn phòng' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 1.500.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Core i5', 'RAM 8GB', 'SSD 256GB'],
-    rating: 4.5,
-    sold: 0
+    key: 'segment-office',
+    title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
+    minPrice: 0,
+    maxPrice: 29999999,
+    banner: 'assets/img/banner-a.png'
   },
   {
-    id: 2,
-    name: 'PC Văn phòng AMD Ryzen 5 / RAM 16GB / SSD 512GB',
-    price: 9500000,
-    oldPrice: null,
-    description: 'Cấu hình bền bỉ cho công việc văn phòng, đa nhiệm tốt với nhiều ứng dụng cùng lúc.',
-    section: 'segment-office',
-    sectionTitle: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
-    image: 'assets/img/banner-khoidau.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'AMD Ryzen' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 800.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Ryzen 5', 'RAM 16GB', 'SSD 512GB'],
-    rating: 4.5,
-    sold: 0
+    key: 'segment-design',
+    title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
+    minPrice: 30000000,
+    maxPrice: 79999999,
+    banner: 'assets/img/banner-b.png'
   },
   {
-    id: 3,
-    name: 'PC Đồ họa Core i7 / RAM 32GB / RTX 4060 / SSD 1TB',
-    price: 10300000,
-    oldPrice: null,
-    description: 'Cấu hình mạnh cho dựng phim, thiết kế đồ họa, render 3D, đáp ứng tốt các phần mềm chuyên dụng.',
-    section: 'segment-design',
-    sectionTitle: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
-    image: 'assets/img/banner-chuyennghiep.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'Đồ họa' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 1.200.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Core i7', 'RAM 32GB', 'RTX 4060', 'SSD 1TB'],
-    rating: 4.5,
-    sold: 0
-  },
-  {
-    id: 4,
-    name: 'PC Gaming Entry Core i5 / RAM 16GB / SSD 512GB',
-    price: 7200000,
-    oldPrice: null,
-    description: 'Cấu hình phù hợp cho thiết kế đồ họa nhẹ và chỉnh sửa ảnh, đồng thời vẫn dùng tốt cho giải trí.',
-    section: 'segment-design',
-    sectionTitle: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
-    image: 'assets/img/banner-chuyennghiep.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'Gaming' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 500.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Core i5', 'RAM 16GB', 'SSD 512GB'],
-    rating: 4.5,
-    sold: 0
-  },
-  {
-    id: 5,
-    name: 'PC Hi-end Core i9 / RAM 64GB / RTX 4090 / SSD 2TB',
-    price: 85000000,
-    oldPrice: 92000000,
-    description: 'Cấu hình đỉnh cao cho dựng phim 4K, AI training, render nặng và gaming 4K 144Hz.',
-    section: 'segment-hiend',
-    sectionTitle: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
-    image: 'assets/img/banner-hiend.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'Hi-end' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 7.000.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Core i9', 'RAM 64GB', 'RTX 4090', 'SSD 2TB'],
-    rating: 4.9,
-    sold: 0
-  },
-  {
-    id: 6,
-    name: 'PC Chuyên nghiệp Core i7 / RAM 32GB / RTX 4070',
-    price: 32000000,
-    oldPrice: null,
-    description: 'Cấu hình cho streamer, editor video, chơi game AAA mượt ở thiết lập cao.',
-    section: 'segment-hiend',
-    sectionTitle: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
-    image: 'assets/img/banner-hiend.png',
-    os: 'Windows 11',
-    badges: [
-      { type: 'red', text: 'Chuyên nghiệp' },
-      { type: 'blue', text: 'Trả góp 0%' },
-      { type: 'yellow', text: 'Giảm 2.000.000đ' }
-    ],
-    status: 'Còn hàng',
-    specs: ['Core i7', 'RAM 32GB', 'RTX 4070'],
-    rating: 4.8,
-    sold: 0
+    key: 'segment-hiend',
+    title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
+    minPrice: 80000000,
+    maxPrice: Infinity,
+    banner: 'assets/img/banner-c.png'
   }
 ];
+
+function getSegmentByPrice(price) {
+  return priceSegments.find((seg) => price >= seg.minPrice && price < seg.maxPrice) || priceSegments[priceSegments.length - 1];
+}
 
 function formatPrice(value) {
   return new Intl.NumberFormat('vi-VN', {
@@ -147,6 +68,36 @@ function loadHeader() {
     });
 }
 
+/* Lấy dữ liệu sản phẩm từ "database ảo" (file JSON) */
+function loadProductData() {
+  return fetch('assets/data/products.json')
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Không thể tải dữ liệu sản phẩm');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      productData = data;
+    })
+    .catch((error) => {
+      console.error('Lỗi tải dữ liệu sản phẩm:', error);
+      productData = [];
+    });
+}
+
+function renderBrandTabs() {
+  return `
+    <div class="brand-logo-tabs">
+      ${brandLogos.map((brand) => `
+        <button type="button" class="brand-logo-tab">
+          <img src="assets/img/logo/${brand.file}" alt="${brand.name}" />
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
 function renderProductCard(product) {
   const os = product.os || '';
   const status = product.status || 'Còn hàng';
@@ -154,14 +105,19 @@ function renderProductCard(product) {
   const badges = product.badges || [];
   const rating = product.rating != null ? product.rating : 4.5;
   const sold = product.sold != null ? product.sold : 0;
+  const giftCount = product.giftCount || 0;
+  const promoCount = product.promoCount || 0;
+  const configCount = product.configCount || 0;
+  const warrantyBadge = product.warrantyBadge || null;
+  const aiBadge = Boolean(product.aiBadge);
 
   return `
     <article class="product-card">
       <a class="product-card-link" href="product.html?id=${product.id}">
         <div class="product-img">
           <img src="${product.image}" alt="${product.name}" />
-          <span class="cert-icon" aria-hidden="true">✅</span>
-          ${os ? `<span class="os-badge">🪟 ${os}</span>` : ''}
+          ${aiBadge ? `<span class="ai-badge" title="Tích hợp AI">AI</span>` : `<span class="cert-icon" aria-hidden="true">✅</span>`}
+          ${warrantyBadge ? `<span class="warranty-badge">🏆 ${warrantyBadge}<br />WARRANTY</span>` : (os ? `<span class="os-badge">🪟 ${os}</span>` : '')}
           ${badges.length ? `
             <div class="promo-badges">
               ${badges.map((b) => `<span class="promo-badge promo-badge-${b.type}">${b.text}</span>`).join('')}
@@ -170,17 +126,29 @@ function renderProductCard(product) {
         </div>
         <div class="product-info">
           <h3>${product.name}</h3>
-          <p class="stock-status"><span class="stock-dot">✓</span> ${status}</p>
+
           ${specs.length ? `
             <div class="spec-chips">
               ${specs.map((s) => `<span class="spec-chip">${s}</span>`).join('')}
             </div>
           ` : ''}
+
+          <div class="benefit-chips">
+            ${giftCount ? `<span class="benefit-chip">🎁 ${giftCount} QUÀ TẶNG</span>` : ''}
+            ${promoCount ? `<span class="benefit-chip">🏷️ ${promoCount} KHUYẾN MÃI</span>` : ''}
+          </div>
+          ${configCount ? `
+            <div class="benefit-chips">
+              <span class="benefit-chip">⚙️ ${configCount} CẤU HÌNH</span>
+            </div>
+          ` : ''}
+
           <p class="product-price">
             ${formatPrice(product.price)}
             ${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}
           </p>
           <p class="rating-row">⭐ ${rating} • Đã bán ${sold}</p>
+          <p class="stock-status"><span class="stock-dot">✓</span> ${status}</p>
         </div>
       </a>
       <button class="buy-btn">Mua ngay</button>
@@ -192,32 +160,25 @@ function renderHome() {
   const container = document.getElementById('product-sections');
   if (!container) return;
 
-  const sections = [...new Set(productData.map((item) => item.section))];
+  container.innerHTML = priceSegments.map((segment) => {
+    const items = productData.filter((item) => getSegmentByPrice(item.price).key === segment.key);
 
-  const brandTabs = ['Tất cả', 'Lenovo', 'Asus', 'HP', 'MSI', 'Surface'];
-
-  container.innerHTML = sections.map((section) => {
-    const sectionTitle = productData.find((item) => item.section === section)?.sectionTitle || 'Sản phẩm';
-    const items = productData.filter((item) => item.section === section);
+    if (!items.length) return '';
 
     return `
-      <section class="segment-frame" id="${section}">
+      <section class="segment-frame" id="${segment.key}">
         <div class="segment-banner-frame">
-          <!-- Banner sẽ thêm sau -->
+          ${segment.banner ? `<img src="${segment.banner}" alt="${segment.title}" />` : ''}
         </div>
         <div class="segment-divider"></div>
 
         <div class="segment-body">
           <div class="segment-header">
-            <h2>${sectionTitle}</h2>
+            <h2>${segment.title}</h2>
             <a href="#top">Quay lên</a>
           </div>
 
-          <div class="brand-tabs">
-            ${brandTabs.map((tab, index) => `
-              <button type="button" class="brand-tab${index === 0 ? ' active' : ''}">${tab}</button>
-            `).join('')}
-          </div>
+          ${renderBrandTabs()}
 
           <div class="sort-row">
             <span class="sort-label">Sắp xếp:</span>
@@ -262,13 +223,52 @@ function renderProductDetail() {
   breadcrumb.textContent = product.name;
   document.title = `${product.name} - Lapstore`;
 
+  const os = product.os || '';
+  const status = product.status || 'Còn hàng';
+  const specs = product.specs || [];
+  const badges = product.badges || [];
+  const rating = product.rating != null ? product.rating : 4.5;
+  const sold = product.sold != null ? product.sold : 0;
+  const giftCount = product.giftCount || 0;
+  const promoCount = product.promoCount || 0;
+  const configCount = product.configCount || 0;
+  const warrantyBadge = product.warrantyBadge || null;
+  const aiBadge = Boolean(product.aiBadge);
+
   container.innerHTML = `
     <div class="product-detail-image">
       <img src="${product.image}" alt="${product.name}" />
+      ${aiBadge ? `<span class="ai-badge" title="Tích hợp AI">AI</span>` : `<span class="cert-icon" aria-hidden="true">✅</span>`}
+      ${warrantyBadge ? `<span class="warranty-badge">🏆 ${warrantyBadge}<br />WARRANTY</span>` : (os ? `<span class="os-badge">🪟 ${os}</span>` : '')}
+      ${badges.length ? `
+        <div class="promo-badges">
+          ${badges.map((b) => `<span class="promo-badge promo-badge-${b.type}">${b.text}</span>`).join('')}
+        </div>
+      ` : ''}
     </div>
     <div class="product-detail-info">
       <h1>${product.name}</h1>
+
+      ${specs.length ? `
+        <div class="spec-chips">
+          ${specs.map((s) => `<span class="spec-chip">${s}</span>`).join('')}
+        </div>
+      ` : ''}
+
+      <div class="benefit-chips">
+        ${giftCount ? `<span class="benefit-chip">🎁 ${giftCount} QUÀ TẶNG</span>` : ''}
+        ${promoCount ? `<span class="benefit-chip">🏷️ ${promoCount} KHUYẾN MÃI</span>` : ''}
+      </div>
+      ${configCount ? `
+        <div class="benefit-chips">
+          <span class="benefit-chip">⚙️ ${configCount} CẤU HÌNH</span>
+        </div>
+      ` : ''}
+
       <div class="price">${formatPrice(product.price)}${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}</div>
+      <p class="rating-row">⭐ ${rating} • Đã bán ${sold}</p>
+      <p class="stock-status"><span class="stock-dot">✓</span> ${status}</p>
+
       <p>${product.description}</p>
       <button class="buy-btn">Mua ngay</button>
     </div>
@@ -278,11 +278,13 @@ function renderProductDetail() {
 window.addEventListener('DOMContentLoaded', () => {
   loadHeader();
 
-  if (document.getElementById('product-sections')) {
-    renderHome();
-  }
+  loadProductData().then(() => {
+    if (document.getElementById('product-sections')) {
+      renderHome();
+    }
 
-  if (document.getElementById('product-detail')) {
-    renderProductDetail();
-  }
+    if (document.getElementById('product-detail')) {
+      renderProductDetail();
+    }
+  });
 });
