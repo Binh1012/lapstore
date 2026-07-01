@@ -92,9 +92,47 @@ main {
   padding: 20px 0 10px;
 }
 
+.banner {
+  position: relative;
+  overflow: hidden;
+}
+
 .banner img {
+  display: block;
+  width: 100%;
+  height: auto;
   border-radius: 12px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.banner-slider {
+  min-height: 0;
+}
+
+.slider-track {
+  display: flex;
+  width: 200%;
+  animation: slide-banners 10s ease-in-out infinite;
+}
+
+.banner-slide {
+  flex: 0 0 50%;
+}
+
+.banner-slider .banner-slide img {
+  border-radius: 12px;
+}
+
+@keyframes slide-banners {
+  0%, 40% {
+    transform: translateX(0);
+  }
+  45%, 85% {
+    transform: translateX(-50%);
+  }
+  90%, 100% {
+    transform: translateX(0);
+  }
 }
 
 .segment-section {
@@ -557,6 +595,13 @@ main {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transform-origin: center center;
+}
+
+.product-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
 }
 
 .product-card-link {
