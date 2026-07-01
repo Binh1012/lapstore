@@ -387,8 +387,10 @@ function renderHome() {
             <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
           </div>
 
-          <div class="product-grid">
-            ${items.map((product) => renderProductCard(product)).join('')}
+          <div class="product-grid-wrapper">
+            <div class="product-grid">
+              ${items.map((product) => renderProductCard(product)).join('')}
+            </div>
           </div>
 
           <div class="segment-view-all">
@@ -406,6 +408,43 @@ window.addEventListener('DOMContentLoaded', () => {
   loadProductData().then(() => {
     if (document.getElementById('product-sections')) {
       renderHome();
+    }
+  });
+
+  const banner3 = document.getElementById('banner-3-trigger');
+  const ruleModal = document.getElementById('rule-modal');
+  const modalClose = document.querySelector('.modal-close');
+
+  const openRuleModal = () => {
+    if (!ruleModal) return;
+    ruleModal.classList.remove('hidden');
+    ruleModal.setAttribute('aria-hidden', 'false');
+  };
+
+  const closeRuleModal = () => {
+    if (!ruleModal) return;
+    ruleModal.classList.add('hidden');
+    ruleModal.setAttribute('aria-hidden', 'true');
+  };
+
+  banner3?.addEventListener('click', openRuleModal);
+  banner3?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openRuleModal();
+    }
+  });
+
+  modalClose?.addEventListener('click', closeRuleModal);
+  ruleModal?.addEventListener('click', (event) => {
+    if (event.target === ruleModal) {
+      closeRuleModal();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeRuleModal();
     }
   });
 });

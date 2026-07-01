@@ -1,10 +1,12 @@
 import json
 import re
 from bs4 import BeautifulSoup
+import sys
+sys.stdout.reconfigure(encoding="utf-8")
 
 HTML_FILE = "Máy tính bàn, PC Đà Nẵng - Thanh Hương Technology.html"
 OUTPUT_FILE = "products.json"
-LIMIT = 30
+LIMIT = 60
 
 
 def clean_price(text):
