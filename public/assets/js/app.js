@@ -19,13 +19,13 @@ const priceSegments = [
     key: 'segment-office',
     title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
     minPrice: 0,
-    maxPrice: 29990000,
+    maxPrice: 30000000,
     banner: 'assets/img/banner-a.png'
   },
   {
     key: 'segment-design',
     title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
-    minPrice: 30000000,
+    minPrice: 30000001,
     maxPrice: 60000000,
     banner: 'assets/img/banner-b.png'
   },
@@ -159,7 +159,7 @@ function renderProductCard(product) {
 
   return `
     <article class="product-card">
-      <a class="product-card-link" href="product.html?id=${product.id}">
+      <a class="product-card-link" href="${product.url || '#'}" target="_blank" rel="noopener">
         <div class="product-img">
           <img src="${product.image}" alt="${product.name}" />
           ${aiBadge ? `<span class="ai-badge" title="Tích hợp AI">AI</span>` : `<span class="cert-icon" aria-hidden="true">✅</span>`}
