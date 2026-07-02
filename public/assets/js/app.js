@@ -8,16 +8,7 @@ const brandLogos = [
   { name: 'Dell', file: 'dell.png' }
 ];
 
-/* ===== DỮ LIỆU CHO FILTER BAR (chỉ demo UI, số liệu minh hoạ) ===== */
-const priceRanges = [
-  { label: 'Dưới 10 triệu' },
-  { label: 'Từ 10 - 15 triệu' },
-  { label: 'Từ 15 - 20 triệu' },
-  { label: 'Từ 20 - 25 triệu' },
-  { label: 'Từ 25 - 30 triệu' },
-  { label: 'Trên 30 triệu' }
-];
-
+/* ===== DỮ LIỆU CHO FILTER BAR (chỉ demo UI, chưa lọc thật) ===== */
 const needsTags = [
   { icon: '🎮', label: 'Chơi Game' },
   { icon: '💼', label: 'Văn Phòng - Học Tập' },
@@ -33,10 +24,10 @@ const filterCriteria = [
     label: 'RAM',
     icon: '🧠',
     options: [
-      { label: '4GB', count: 34 }, { label: '8GB', count: 300 },
-      { label: '16GB', count: 189 }, { label: '32GB', count: 59 },
-      { label: '64GB', count: 35 }, { label: '96GB', count: 1 },
-      { label: '128GB', count: 22 }, { label: '256GB', count: 157 }
+      { label: '4GB' }, { label: '8GB' },
+      { label: '16GB' }, { label: '32GB' },
+      { label: '64GB' }, { label: '96GB' },
+      { label: '128GB' }, { label: '256GB' }
     ]
   },
   {
@@ -44,11 +35,11 @@ const filterCriteria = [
     label: 'Ổ Cứng',
     icon: '⚡',
     options: [
-      { label: 'SSD 120GB', count: 6 }, { label: 'SSD 128GB', count: 13 },
-      { label: 'SSD 240GB', count: 13 }, { label: 'SSD 256GB', count: 148 },
-      { label: 'SSD 480GB', count: 2 }, { label: 'SSD 512GB', count: 323 },
-      { label: 'SSD 1TB', count: 85 }, { label: 'SSD 2TB', count: 3 },
-      { label: 'SSD 4TB', count: 9 }, { label: 'HDD 1TB', count: 38 }
+      { label: 'SSD 120GB' }, { label: 'SSD 128GB' },
+      { label: 'SSD 240GB' }, { label: 'SSD 256GB' },
+      { label: 'SSD 480GB' }, { label: 'SSD 512GB' },
+      { label: 'SSD 1TB' }, { label: 'SSD 2TB' },
+      { label: 'SSD 4TB' }, { label: 'HDD 1TB' }
     ]
   },
   {
@@ -57,10 +48,10 @@ const filterCriteria = [
     icon: '💻',
     options: [
       { label: 'Intel® Core Ultra' }, { label: 'AMD Ryzen™ AI' },
-      { label: 'Intel® Core™' }, { label: 'Intel Xeon', count: 17 },
+      { label: 'Intel® Core™' }, { label: 'Intel Xeon' },
       { label: 'Intel Celeron' }, { label: 'Intel Pentium' },
       { label: 'Intel Core i3' }, { label: 'Intel Core i5' },
-      { label: 'Intel Core i7'}, { label: 'Intel Core i9' },
+      { label: 'Intel Core i7' }, { label: 'Intel Core i9' },
       { label: 'AMD Ryzen 3' }, { label: 'AMD Ryzen 5' },
       { label: 'AMD Ryzen 7' }, { label: 'AMD Ryzen 9' }
     ]
@@ -73,33 +64,21 @@ const filterCriteria = [
       { label: 'NVIDIA T Series' }, { label: 'NVIDIA GeForce GTX Series' },
       { label: 'NVIDIA GeForce RTX Series' }, { label: 'AMD Radeon RX Series' },
       { label: 'AMD Radeon Pro Series' }, { label: 'Card đồ họa tích hợp (Onboard/iGPU)' },
-      { label: 'Intel Arc A-Series'}, { label: 'Nvidia RTX A-Series' },
+      { label: 'Intel Arc A-Series' }, { label: 'Nvidia RTX A-Series' },
       { label: 'NVIDIA GT Series' }, { label: 'NVIDIA RTX Pro' }
     ]
   }
 ];
 
 /* ===== RENDER FILTER BAR ===== */
-function renderPriceRanges(segmentKey) {
-  return `
-    <div class="price-range-row">
-      ${priceRanges.map((r) => `
-        <button type="button" class="price-range-btn">
-          ${r.label} 
-        </button>
-      `).join('')}
-    </div>
-  `;
-}
-
 function renderCriteriaPanel(segmentKey, criteria) {
   const panelId = `panel-${segmentKey}-${criteria.key}`;
   return `
     <div class="criteria-panel" id="${panelId}">
       <div class="criteria-options">
         ${criteria.options.map((opt) => `
-          <button type="button" class="criteria-option" ${opt.count === 0 ? 'disabled' : ''}>
-            ${opt.label} 
+          <button type="button" class="criteria-option">
+            ${opt.label}
           </button>
         `).join('')}
       </div>
@@ -128,8 +107,8 @@ function renderNeedsTags() {
     <div class="needs-row">
       <span class="needs-label">Nhu cầu:</span>
       ${needsTags.map((tag) => `
-        <button type="button" class="needs-tag" ${tag.count === 0 ? 'disabled' : ''}>
-          ${tag.icon} ${tag.label} <span class="option-count">(${tag.count})</span>
+        <button type="button" class="needs-tag">
+          ${tag.icon} ${tag.label}
         </button>
       `).join('')}
     </div>
@@ -162,50 +141,15 @@ document.addEventListener('click', (e) => {
     document.querySelectorAll('.criteria-panel.open').forEach((p) => p.classList.remove('open'));
   }
 
-  const priceBtn = e.target.closest('.price-range-btn');
-  if (priceBtn) {
-    priceBtn.parentElement.querySelectorAll('.price-range-btn').forEach((b) => b.classList.remove('active'));
-    priceBtn.classList.add('active');
-  }
-
   const brandBtn = e.target.closest('.brand-logo-tab');
   if (brandBtn) brandBtn.classList.toggle('active');
 
   const needsBtn = e.target.closest('.needs-tag');
-  if (needsBtn && !needsBtn.disabled) needsBtn.classList.toggle('active');
+  if (needsBtn) needsBtn.classList.toggle('active');
 
   const optionBtn = e.target.closest('.criteria-option');
-  if (optionBtn && !optionBtn.disabled) optionBtn.classList.toggle('active');
+  if (optionBtn) optionBtn.classList.toggle('active');
 });
-
-/* Định nghĩa phân khúc dựa theo khoảng giá */
-const priceSegments = [
-  {
-    key: 'segment-office',
-    title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
-    minPrice: 0,
-    maxPrice: 30000000,
-    banner: 'assets/img/banner-a.png'
-  },
-  {
-    key: 'segment-design',
-    title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
-    minPrice: 30000001,
-    maxPrice: 60000000,
-    banner: 'assets/img/banner-b.png'
-  },
-  {
-    key: 'segment-hiend',
-    title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
-    minPrice: 60000001,
-    maxPrice: Infinity,
-    banner: 'assets/img/banner-c.png'
-  }
-];
-
-function getSegmentByPrice(price) {
-  return priceSegments.find((seg) => price >= seg.minPrice && price < seg.maxPrice) || priceSegments[priceSegments.length - 1];
-}
 
 function formatPrice(value) {
   return new Intl.NumberFormat('vi-VN', {
@@ -356,54 +300,49 @@ function renderProductCard(product) {
   `;
 }
 
+/* Gộp toàn bộ sản phẩm vào 1 khối duy nhất (không chia theo phân khúc giá nữa) */
 function renderHome() {
   const container = document.getElementById('product-sections');
   if (!container) return;
 
-  container.innerHTML = priceSegments.map((segment) => {
-    const items = productData.filter((item) => getSegmentByPrice(item.price).key === segment.key);
+  if (!productData.length) {
+    container.innerHTML = '';
+    return;
+  }
 
-    if (!items.length) return '';
+  container.innerHTML = `
+    <section class="segment-frame" id="all-products">
+      <div class="segment-body">
+        ${renderFilterBar('all')}
 
-    return `
-      <section class="segment-frame" id="${segment.key}">
-        <div class="segment-banner-frame">
-          ${segment.banner ? `<img src="${segment.banner}" alt="${segment.title}" />` : ''}
+        <div class="sort-row">
+          <span class="sort-label">Sắp xếp:</span>
+          <button type="button" class="sort-btn">🔥 Khuyến mãi HOT</button>
+          <button type="button" class="sort-btn">↑ Giá Thấp - Cao</button>
+          <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
         </div>
-        <div class="segment-divider"></div>
 
-        <div class="segment-body">
-          <div class="segment-header">
-  
-            <a href="#top">Quay lên</a>
-          </div>
-
-          ${renderFilterBar(segment.key)}
-
-          <div class="sort-row">
-            <span class="sort-label">Sắp xếp:</span>
-            <button type="button" class="sort-btn">🔥 Khuyến mãi HOT</button>
-            <button type="button" class="sort-btn">↑ Giá Thấp - Cao</button>
-            <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
-          </div>
-
-          <div class="product-grid-wrapper">
-            <div class="product-grid">
-              ${items.map((product) => renderProductCard(product)).join('')}
-            </div>
-          </div>
-
-          <div class="segment-view-all">
-            <a href="#" class="view-all-btn">Xem tất cả sản phẩm</a>
+        <div class="product-grid-wrapper">
+          <div class="product-grid">
+            ${productData.map((product) => renderProductCard(product)).join('')}
           </div>
         </div>
-      </section>
-    `;
-  }).join('');
+      </div>
+    </section>
+  `;
+}
+
+/* ===== HERO SLIDER (2 ảnh trượt ngang trong banner-2) ===== */
+function initHeroBannerSlider() {
+  const slider = document.querySelector('.banner-slider');
+  if (!slider) return;
+  // Hiệu ứng trượt được xử lý hoàn toàn bằng CSS animation (slide-banners),
+  // không cần JS bổ sung cho phần này.
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   loadHeader();
+  initHeroBannerSlider();
 
   loadProductData().then(() => {
     if (document.getElementById('product-sections')) {

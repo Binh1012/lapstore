@@ -194,26 +194,7 @@ main {
   }
 }
 
-.segment-section {
-  padding: 12px 0 24px;
-}
-
-.segment-banners {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.segment-banner-link img {
-  border-radius: 10px;
-  transition: transform 0.2s ease;
-}
-
-.segment-banner-link:hover img {
-  transform: scale(1.03);
-}
-
-/* ===== KHUNG PHÂN KHÚC (segment-frame) ===== */
+/* ===== KHUNG SẢN PHẨM (segment-frame) ===== */
 .segment-frame {
   border: 3px solid #0d4bc3;
   border-radius: 18px;
@@ -223,66 +204,8 @@ main {
   box-shadow: 0 14px 30px rgba(13, 75, 195, 0.14);
 }
 
-.segment-banner-frame {
-  height: 220px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-}
-
-.segment-banner-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.segment-divider {
-  height: 5px;
-  background: linear-gradient(90deg, #e11d48 0%, #fda4af 50%, #e11d48 100%);
-}
-
 .segment-body {
   padding: 18px 20px 28px;
-}
-
-.segment-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.segment-header h2 {
-  font-size: 18px;
-  color: #111827;
-}
-
-.segment-header a {
-  color: var(--primary);
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.brand-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.brand-tab {
-  border: 1px solid #e11d48;
-  background: #fff;
-  color: #e11d48;
-  font-weight: 700;
-  font-size: 13px;
-  padding: 8px 18px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.brand-tab.active {
-  background: #e11d48;
-  color: #fff;
 }
 
 .sort-row {
@@ -335,7 +258,7 @@ main {
   background: #e11d48;
   color: #fff;
 }
-/* ===== HẾT KHUNG PHÂN KHÚC ===== */
+/* ===== HẾT KHUNG SẢN PHẨM ===== */
 
 /* ===== HÀNG LOGO HÃNG ===== */
 .brand-logo-tabs {
@@ -365,6 +288,11 @@ main {
 
 .brand-logo-tab:hover {
   border-color: var(--primary);
+}
+
+.brand-logo-tab.active {
+  border-color: #e11d48;
+  border-width: 2px;
 }
 
 /* ===== BADGE AI / BẢO HÀNH ===== */
@@ -419,6 +347,7 @@ main {
   padding: 4px 9px;
   border-radius: 999px;
 }
+
 /* ===== FILTER BAR ===== */
 .filter-bar {
   background: #fff;
@@ -435,14 +364,6 @@ main {
   margin-bottom: 10px;
 }
 
-.price-range-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.price-range-btn,
 .criteria-toggle,
 .needs-tag {
   border: 1px solid #d1d5db;
@@ -455,24 +376,9 @@ main {
   cursor: pointer;
 }
 
-.price-range-btn .option-count,
-.needs-tag .option-count,
-.criteria-option .option-count {
-  color: #e11d48;
-  font-weight: 700;
-}
-
-.price-range-btn:hover,
 .criteria-toggle:hover,
-.needs-tag:hover:not(:disabled) {
+.needs-tag:hover {
   border-color: var(--primary);
-  color: var(--primary);
-}
-
-.price-range-btn.active {
-  border-color: var(--primary);
-  border-width: 2px;
-  background: #fff;
   color: var(--primary);
 }
 
@@ -538,7 +444,7 @@ main {
   text-align: left;
 }
 
-.criteria-option:hover:not(:disabled) {
+.criteria-option:hover {
   border-color: var(--primary);
   background: #eaf2ff;
 }
@@ -548,19 +454,6 @@ main {
   border-width: 2px;
   background: #fff;
   color: var(--text);
-}
-
-.criteria-option.active .option-count {
-  color: var(--primary);
-}
-
-.criteria-option:disabled {
-  color: #b0b6c0;
-  cursor: not-allowed;
-}
-
-.criteria-option:disabled .option-count {
-  color: #b0b6c0;
 }
 
 .apply-filter-btn {
@@ -603,20 +496,7 @@ main {
   border-width: 2px;
   color: var(--text);
 }
-
-.needs-tag.active .option-count {
-  color: var(--primary);
-}
-
-.needs-tag:disabled {
-  color: #b0b6c0;
-  cursor: not-allowed;
-}
-
-.brand-logo-tab.active {
-  border-color: #e11d48;
-  border-width: 2px;
-}
+/* ===== HẾT FILTER BAR ===== */
 
 .product-section {
   padding: 20px 0 8px;
@@ -851,10 +731,6 @@ main {
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .segment-banners {
-    grid-template-columns: 1fr 1fr;
-  }
 }
 
 @media (max-width: 768px) {
@@ -864,8 +740,7 @@ main {
     padding-right: 16px;
   }
 
-  .banner-section,
-  .segment-banners {
+  .banner-section {
     grid-template-columns: 1fr;
     display: flex;
     flex-direction: column;
