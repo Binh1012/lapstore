@@ -369,9 +369,64 @@ function initHeroBannerSlider() {
   if (!slider) return;
 }
 
+/* ===== ĐẾM NGƯỢC KHUYẾN MÃI ===== */
+// Đổi mốc kết thúc tại đây (định dạng: năm, tháng-1, ngày, giờ, phút, giây)
+const COUNTDOWN_END = new Date(2026, 8, 30, 23, 59, 0);
+
+function pad2(num) {
+  return String(num).padStart(2, '0');
+}
+
+function initCountdown() {
+  const daysEl = document.getElementById('cd-days');
+  const hoursEl = document.getElementById('cd-hours');
+  const minutesEl = document.getElementById('cd-minutes');
+  const secondsEl = document.getElementById('cd-seconds');
+  const endLabelEl = document.getElementById('cd-end-label');
+
+  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+  if (endLabelEl) {
+    const hh = pad2(COUNTDOWN_END.getHours());
+    const mm = pad2(COUNTDOWN_END.getMinutes());
+    const dd = pad2(COUNTDOWN_END.getDate());
+    const mo = pad2(COUNTDOWN_END.getMonth() + 1);
+    const yyyy = COUNTDOWN_END.getFullYear();
+    endLabelEl.textContent = `${hh}:${mm} ngày ${dd}/${mo}/${yyyy}`;
+  }
+
+  function tick() {
+    const diff = COUNTDOWN_END.getTime() - Date.now();
+
+    if (diff <= 0) {
+      daysEl.textContent = '00';
+      hoursEl.textContent = '00';
+      minutesEl.textContent = '00';
+      secondsEl.textContent = '00';
+      clearInterval(timer);
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    daysEl.textContent = pad2(days);
+    hoursEl.textContent = pad2(hours);
+    minutesEl.textContent = pad2(minutes);
+    secondsEl.textContent = pad2(seconds);
+  }
+
+  tick();
+  const timer = setInterval(tick, 1000);
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   loadHeader();
   initHeroBannerSlider();
+  initCountdown();
 
   loadProductData().then(() => {
     if (document.getElementById('product-sections')) {
