@@ -8,7 +8,7 @@ const brandLogos = [
   { name: 'Dell', file: 'dell.png' }
 ];
 
-/* ===== DỮ LIỆU CHO FILTER BAR (chỉ demo UI, chưa lọc thật) ===== */
+/* ===== DỮ LIỆU CHO FILTER BAR ===== */
 const needsTags = [
   { icon: '🎮', label: 'Chơi Game' },
   { icon: '💼', label: 'Văn Phòng - Học Tập' },
@@ -16,6 +16,15 @@ const needsTags = [
   { icon: '💻', label: 'Lập Trình' },
   { icon: '🖥️', label: 'Workstation' },
   { icon: '🗄️', label: 'Máy chủ server' }
+];
+
+const priceRanges = [
+  { key: 'p1', label: 'Dưới 10 triệu',    min: 0,        max: 9999999  },
+  { key: 'p2', label: 'Từ 10 - 15 triệu', min: 10000000, max: 14999999 },
+  { key: 'p3', label: 'Từ 15 - 20 triệu', min: 15000000, max: 19999999 },
+  { key: 'p4', label: 'Từ 20 - 25 triệu', min: 20000000, max: 24999999 },
+  { key: 'p5', label: 'Từ 25 - 30 triệu', min: 25000000, max: 29999999 },
+  { key: 'p6', label: 'Trên 30 triệu',    min: 30000000, max: Infinity  }
 ];
 
 const filterCriteria = [
@@ -71,6 +80,21 @@ const filterCriteria = [
 ];
 
 /* ===== RENDER FILTER BAR ===== */
+function renderPriceRangeRow() {
+  return `
+    <div class="price-range-row">
+      <span class="price-range-label">Khoảng giá:</span>
+      <div class="price-range-options">
+        ${priceRanges.map((r) => `
+          <button type="button" class="price-range-btn" data-price-key="${r.key}" data-min="${r.min}" data-max="${r.max === Infinity ? 'Infinity' : r.max}">
+            ${r.label}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
 function renderCriteriaPanel(segmentKey, criteria) {
   const panelId = `panel-${segmentKey}-${criteria.key}`;
   return `
@@ -118,15 +142,22 @@ function renderNeedsTags() {
 function renderFilterBar(segmentKey) {
   return `
     <div class="filter-bar">
-      <div class="filter-section-label">Chọn theo tiêu chí:</div>
-      ${renderCriteriaRow(segmentKey)}
-      ${renderBrandTabs()}
+      <div class="filter-brand-row">
+        ${renderBrandTabs()}
+      </div>
+      <div class="filter-price-row">
+        ${renderPriceRangeRow()}
+      </div>
+      <div class="filter-criteria-row">
+        <div class="filter-section-label">Chọn theo tiêu chí:</div>
+        ${renderCriteriaRow(segmentKey)}
+      </div>
       ${renderNeedsTags()}
     </div>
   `;
 }
 
-/* Mở / đóng panel tiêu chí, chỉ 1 panel mở tại 1 thời điểm */
+/* Mở / đóng panel tiêu chí */
 function toggleCriteriaPanel(panelId) {
   const panel = document.getElementById(panelId);
   if (!panel) return;
@@ -135,7 +166,7 @@ function toggleCriteriaPanel(panelId) {
   if (!isOpen) panel.classList.add('open');
 }
 
-/* Toggle active state (chỉ UI, chưa lọc thật) + đóng panel khi click ra ngoài */
+/* Toggle active state + đóng dropdown khi click ra ngoài */
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.criteria-dropdown')) {
     document.querySelectorAll('.criteria-panel.open').forEach((p) => p.classList.remove('open'));
@@ -149,6 +180,14 @@ document.addEventListener('click', (e) => {
 
   const optionBtn = e.target.closest('.criteria-option');
   if (optionBtn) optionBtn.classList.toggle('active');
+
+  /* Khoảng giá: toggle active, chỉ 1 nút active tại 1 thời điểm */
+  const priceBtn = e.target.closest('.price-range-btn');
+  if (priceBtn) {
+    const row = priceBtn.closest('.price-range-options');
+    row.querySelectorAll('.price-range-btn').forEach((b) => b.classList.remove('active'));
+    priceBtn.classList.toggle('active');
+  }
 });
 
 function formatPrice(value) {
@@ -175,7 +214,6 @@ function loadHeader() {
     });
 }
 
-/* Chuyển badges dạng mảng chuỗi thành mảng {type, text} */
 function normalizeBadges(rawBadges) {
   const colorCycle = ['red', 'blue', 'yellow'];
   return (rawBadges || []).map((text, index) => ({
@@ -184,13 +222,11 @@ function normalizeBadges(rawBadges) {
   }));
 }
 
-/* Gom các thông số thành mảng spec-chip, bỏ giá trị rỗng */
 function buildSpecs(raw) {
   return [raw.cpu, raw.gpu, raw.ram, raw.storage, raw.display, raw.accessories]
     .filter((value) => value && value.trim() !== '');
 }
 
-/* Chuẩn hoá 1 sản phẩm từ dữ liệu thật */
 function normalizeProduct(raw, index) {
   return {
     id: index,
@@ -270,13 +306,11 @@ function renderProductCard(product) {
         </div>
         <div class="product-info">
           <h3>${product.name}</h3>
-
           ${specs.length ? `
             <div class="spec-chips">
               ${specs.map((s) => `<span class="spec-chip">${s}</span>`).join('')}
             </div>
           ` : ''}
-
           <div class="benefit-chips">
             ${giftCount ? `<span class="benefit-chip">🎁 ${giftCount} QUÀ TẶNG</span>` : ''}
             ${promoCount ? `<span class="benefit-chip">🏷️ ${promoCount} KHUYẾN MÃI</span>` : ''}
@@ -286,7 +320,6 @@ function renderProductCard(product) {
               <span class="benefit-chip">⚙️ ${configCount} CẤU HÌNH</span>
             </div>
           ` : ''}
-
           <p class="product-price">
             ${formatPrice(product.price)}
             ${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}
@@ -300,7 +333,6 @@ function renderProductCard(product) {
   `;
 }
 
-/* Gộp toàn bộ sản phẩm vào 1 khối duy nhất (không chia theo phân khúc giá nữa) */
 function renderHome() {
   const container = document.getElementById('product-sections');
   if (!container) return;
@@ -332,12 +364,9 @@ function renderHome() {
   `;
 }
 
-/* ===== HERO SLIDER (2 ảnh trượt ngang trong banner-2) ===== */
 function initHeroBannerSlider() {
   const slider = document.querySelector('.banner-slider');
   if (!slider) return;
-  // Hiệu ứng trượt được xử lý hoàn toàn bằng CSS animation (slide-banners),
-  // không cần JS bổ sung cho phần này.
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -376,14 +405,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
   modalClose?.addEventListener('click', closeRuleModal);
   ruleModal?.addEventListener('click', (event) => {
-    if (event.target === ruleModal) {
-      closeRuleModal();
-    }
+    if (event.target === ruleModal) closeRuleModal();
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      closeRuleModal();
-    }
+    if (event.key === 'Escape') closeRuleModal();
   });
 });
