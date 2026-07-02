@@ -1021,18 +1021,55 @@ main {
   font-weight: 700;
 }
 .flashsale-grid {
+  overflow: hidden;
+  position: relative;
+}
+.flashsale-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.flashsale-control {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 999px;
+  background: #0d4bc3;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(13, 75, 195, 0.18);
+}
+.flashsale-control:hover {
+  background: #083a8f;
+}
+.flashsale-track {
+  display: flex;
+  transition: transform 0.7s ease;
+}
+.flashsale-slide {
+  flex: 0 0 100%;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
 }
+.flashsale-item {
+  min-width: 0;
+}
 .flashsale-item .product-card { height: 100%; }
 
+.flashsale-slide-item {
+  flex: 0 0 calc(25% - 9px);
+  min-width: 0;
+}
+
 @media (max-width: 1024px) {
-  .flashsale-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flashsale-slide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
-  .flashsale-grid { grid-template-columns: 1fr; }
+  .flashsale-slide { grid-template-columns: 1fr; }
 }
 
 @keyframes slide-banners {

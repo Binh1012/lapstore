@@ -289,19 +289,76 @@ function loadProductData() {
     });
 }
 
+let flashSaleCarouselIndex = 0;
+let flashSaleCarouselTimer = null;
+
+function initFlashSaleCarousel() {
+  const grid = document.getElementById('flashsale-grid');
+  const track = grid?.querySelector('.flashsale-track');
+  const nextBtn = grid?.querySelector('.flashsale-control-next');
+
+  if (!track) return;
+
+  const items = Array.from(track.children);
+  if (items.length <= 1) {
+    nextBtn?.setAttribute('disabled', 'true');
+    return;
+  }
+
+  const stepSizePercent = 25;
+
+  const updateCarousel = () => {
+    track.style.transform = `translateX(-${flashSaleCarouselIndex * stepSizePercent}%)`;
+  };
+
+  const goToNextItem = () => {
+    flashSaleCarouselIndex += 1;
+    updateCarousel();
+  };
+
+  clearInterval(flashSaleCarouselTimer);
+  flashSaleCarouselIndex = 0;
+  updateCarousel();
+
+  nextBtn?.addEventListener('click', goToNextItem);
+
+  flashSaleCarouselTimer = window.setInterval(goToNextItem, 4000);
+}
+
 function renderFlashSaleSection() {
   const grid = document.getElementById('flashsale-grid');
   if (!grid) return;
 
   // Prefer products that have an oldPrice (discount) or promoCount, fall back to first items
-  const candidates = productData.filter(p => p.oldPrice || p.promoCount > 0);
+  const candidates = productData.filter((p) => p.oldPrice || p.promoCount > 0);
   const items = (candidates.length ? candidates : productData).slice(0, 8);
 
-  grid.innerHTML = items.map((p) => `
-    <div class="flashsale-item">
-      ${renderProductCard(p)}
+  if (!items.length) {
+    grid.innerHTML = '';
+    return;
+  }
+
+  const groups = [];
+  for (let index = 0; index < items.length; index += 4) {
+    groups.push(items.slice(index, index + 4));
+  }
+
+  const carouselItems = Array.from({ length: 8 }, () => items).flat();
+
+  grid.innerHTML = `
+    <div class="flashsale-controls">
+      <button type="button" class="flashsale-control flashsale-control-next" aria-label="Sản phẩm tiếp theo">›</button>
     </div>
-  `).join('');
+    <div class="flashsale-track" data-total-steps="${carouselItems.length}">
+      ${carouselItems.map((p) => `
+        <div class="flashsale-slide-item">
+          ${renderProductCard(p)}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  initFlashSaleCarousel();
 }
 
 function renderBrandTabs() {
@@ -493,36 +550,5 @@ window.addEventListener('DOMContentLoaded', () => {
     renderFlashSaleSection();
   });
 
-  const banner3 = document.getElementById('banner-3-trigger');
-  const ruleModal = document.getElementById('rule-modal');
-  const modalClose = document.querySelector('.modal-close');
-
-  const openRuleModal = () => {
-    if (!ruleModal) return;
-    ruleModal.classList.remove('hidden');
-    ruleModal.setAttribute('aria-hidden', 'false');
-  };
-
-  const closeRuleModal = () => {
-    if (!ruleModal) return;
-    ruleModal.classList.add('hidden');
-    ruleModal.setAttribute('aria-hidden', 'true');
-  };
-
-  banner3?.addEventListener('click', openRuleModal);
-  banner3?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      openRuleModal();
-    }
-  });
-
-  modalClose?.addEventListener('click', closeRuleModal);
-  ruleModal?.addEventListener('click', (event) => {
-    if (event.target === ruleModal) closeRuleModal();
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeRuleModal();
-  });
+  // Banner and rule modal handlers removed per request
 });
