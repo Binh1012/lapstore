@@ -607,15 +607,7 @@ main {
 }
 
 /* Per-line underline on hover using text-decoration (works across wrapped lines) */
-.product-info h3:hover {
-  color: var(--primary);
-  text-decoration: underline;
-  text-decoration-color: var(--primary);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-
-/* Also change title color when hovering the whole product card */
+.product-info h3:hover,
 .product-card:hover .product-info h3 {
   color: var(--primary);
   text-decoration: underline;
