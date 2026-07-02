@@ -289,6 +289,21 @@ function loadProductData() {
     });
 }
 
+function renderFlashSaleSection() {
+  const grid = document.getElementById('flashsale-grid');
+  if (!grid) return;
+
+  // Prefer products that have an oldPrice (discount) or promoCount, fall back to first items
+  const candidates = productData.filter(p => p.oldPrice || p.promoCount > 0);
+  const items = (candidates.length ? candidates : productData).slice(0, 8);
+
+  grid.innerHTML = items.map((p) => `
+    <div class="flashsale-item">
+      ${renderProductCard(p)}
+    </div>
+  `).join('');
+}
+
 function renderBrandTabs() {
   return `
     <div class="brand-logo-tabs">
@@ -456,6 +471,9 @@ function initCountdown() {
     hoursEl.textContent = pad2(hours);
     minutesEl.textContent = pad2(minutes);
     secondsEl.textContent = pad2(seconds);
+    // brief pulse effect on seconds change
+    secondsEl.classList.add('pulse');
+    setTimeout(() => secondsEl.classList.remove('pulse'), 600);
   }
 
   tick();
@@ -471,6 +489,8 @@ window.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('product-sections')) {
       renderHome();
     }
+    // render flash sale block (shows up to 8 discounted products)
+    renderFlashSaleSection();
   });
 
   const banner3 = document.getElementById('banner-3-trigger');
