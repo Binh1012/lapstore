@@ -79,6 +79,35 @@ const filterCriteria = [
   }
 ];
 
+/* Định nghĩa phân khúc dựa theo khoảng giá */
+const priceSegments = [
+  {
+    key: 'segment-office',
+    title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
+    minPrice: 0,
+    maxPrice: 30000000,
+    banner: 'assets/img/banner-a.png'
+  },
+  {
+    key: 'segment-design',
+    title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
+    minPrice: 30000001,
+    maxPrice: 60000000,
+    banner: 'assets/img/banner-b.png'
+  },
+  {
+    key: 'segment-hiend',
+    title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
+    minPrice: 60000001,
+    maxPrice: Infinity,
+    banner: 'assets/img/banner-c.png'
+  }
+];
+
+function getSegmentByPrice(price) {
+  return priceSegments.find((seg) => price >= seg.minPrice && price < seg.maxPrice) || priceSegments[priceSegments.length - 1];
+}
+
 /* ===== RENDER FILTER BAR ===== */
 function renderPriceRangeRow() {
   return `
@@ -142,12 +171,6 @@ function renderNeedsTags() {
 function renderFilterBar(segmentKey) {
   return `
     <div class="filter-bar">
-      <div class="filter-brand-row">
-        ${renderBrandTabs()}
-      </div>
-      <div class="filter-price-row">
-        ${renderPriceRangeRow()}
-      </div>
       <div class="filter-criteria-row">
         <div class="filter-section-label">Chọn theo tiêu chí:</div>
         ${renderCriteriaRow(segmentKey)}
@@ -333,35 +356,51 @@ function renderProductCard(product) {
   `;
 }
 
+/* Chia sản phẩm theo 3 phân khúc giá */
 function renderHome() {
   const container = document.getElementById('product-sections');
   if (!container) return;
 
-  if (!productData.length) {
-    container.innerHTML = '';
-    return;
-  }
+  container.innerHTML = priceSegments.map((segment) => {
+    const items = productData.filter((item) => getSegmentByPrice(item.price).key === segment.key);
 
-  container.innerHTML = `
-    <section class="segment-frame" id="all-products">
-      <div class="segment-body">
-        ${renderFilterBar('all')}
+    if (!items.length) return '';
 
-        <div class="sort-row">
-          <span class="sort-label">Sắp xếp:</span>
-          <button type="button" class="sort-btn">🔥 Khuyến mãi HOT</button>
-          <button type="button" class="sort-btn">↑ Giá Thấp - Cao</button>
-          <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
+    return `
+      <section class="segment-frame" id="${segment.key}">
+        <div class="segment-banner-frame">
+          ${segment.banner ? `<img src="${segment.banner}" alt="${segment.title}" />` : ''}
         </div>
+        <div class="segment-divider"></div>
 
-        <div class="product-grid-wrapper">
-          <div class="product-grid">
-            ${productData.map((product) => renderProductCard(product)).join('')}
+        <div class="segment-body">
+          <div class="segment-header">
+            <h2>${segment.title}</h2>
+            <a href="#top">Quay lên</a>
+          </div>
+
+          ${renderFilterBar(segment.key)}
+
+          <div class="sort-row">
+            <span class="sort-label">Sắp xếp:</span>
+            <button type="button" class="sort-btn">🔥 Khuyến mãi HOT</button>
+            <button type="button" class="sort-btn">↑ Giá Thấp - Cao</button>
+            <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
+          </div>
+
+          <div class="product-grid-wrapper">
+            <div class="product-grid">
+              ${items.map((product) => renderProductCard(product)).join('')}
+            </div>
+          </div>
+
+          <div class="segment-view-all">
+            <a href="#" class="view-all-btn">Xem tất cả sản phẩm</a>
           </div>
         </div>
-      </div>
-    </section>
-  `;
+      </section>
+    `;
+  }).join('');
 }
 
 function initHeroBannerSlider() {

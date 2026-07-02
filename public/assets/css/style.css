@@ -190,6 +190,25 @@ main {
   }
 }
 
+.segment-section {
+  padding: 12px 0 24px;
+}
+
+.segment-banners {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.segment-banner-link img {
+  border-radius: 10px;
+  transition: transform 0.2s ease;
+}
+
+.segment-banner-link:hover img {
+  transform: scale(1.03);
+}
+
 /* ===== KHUNG SẢN PHẨM ===== */
 .segment-frame {
   border: 3px solid #0d4bc3;
@@ -523,6 +542,17 @@ main {
   font-size: 13px;
   min-height: 38px;
   line-height: 1.4;
+  transition: color 0.18s ease;
+  cursor: pointer;
+}
+
+/* Per-line underline on hover using text-decoration (works across wrapped lines) */
+.product-info h3:hover {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .stock-status {
@@ -920,6 +950,9 @@ main {
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .segment-banners {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 768px) {
@@ -927,7 +960,7 @@ main {
     padding-left: 16px;
     padding-right: 16px;
   }
-  .banner-section {
+  .banner-section, .segment-banners {
     grid-template-columns: 1fr;
     display: flex;
     flex-direction: column;
@@ -939,4 +972,12 @@ main {
     padding-bottom: 6px;
     -webkit-overflow-scrolling: touch;
   }
+}
+
+/* Ensure brand logos and price range are hidden when removed from UI */
+.filter-brand-row,
+.filter-price-row,
+.brand-logo-tabs,
+.price-range-row {
+  display: none !important;
 }
