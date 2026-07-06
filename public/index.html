@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lapstore - PC Lắp ráp</title>
+    <title>Lapstore - Máy Tính Lắp Ráp & Linh Kiện Chính Hãng</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
+    <!-- Header động nhận dữ liệu từ file header.html -->
     <div id="site-header"></div>
 
     <main id="top">
-      <!-- Banner section removed per request -->
-
+      <!-- KHỐI ĐẾM NGƯỢC FLASH SALE TỔNG THỂ -->
       <section class="countdown-section">
-        <span class="countdown-badge">● FLASH SALE</span>
-        <h2 class="countdown-title">Flash Sale kết thúc sau</h2>
+        <span class="countdown-badge">● FLASH SALE </span>
+        <h2 class="countdown-title">Thời gian ưu đãi còn lại</h2>
 
         <div class="countdown-boxes">
           <div class="countdown-box">
@@ -37,15 +42,15 @@
             <span class="countdown-label">GIÂY</span>
           </div>
         </div>
-
-        <p class="countdown-end-text">Kết thúc lúc <strong id="cd-end-label"></strong></p>
+        <p class="countdown-end-text">Chương trình kết thúc lúc: <strong id="cd-end-label"></strong></p>
       </section>
 
-      <!-- FLASH SALE SECTION (2 rows x 4 products) -->
+      <!-- KHỐI SẢN PHẨM FLASH SALE (AUTOMATIC CAROUSEL) -->
       <section class="flashsale-section">
         <div id="flashsale-grid" class="flashsale-grid"></div>
       </section>
 
+      <!-- BANNER CHUYỂN NHANH ĐẾN CÁC PHÂN KHÚC GIÁ -->
       <section class="segment-section">
         <div class="segment-banners">
           <div class="segment-banner-block">
@@ -66,14 +71,13 @@
         </div>
       </section>
 
+      <!-- KHU VỰC CHỨA CÁC PHÂN KHÚC DO JAVASCRIPT TỰ ĐỘNG RENDER -->
       <div id="product-sections"></div>
     </main>
 
     <footer class="footer">
-      <p>&nbsp;</p>
+      <p>© 2026 Lapstore. Tất cả quyền lợi được bảo lưu.</p>
     </footer>
-
-    <!-- Rule modal removed per request -->
 
     <script src="assets/js/app.js"></script>
   </body>

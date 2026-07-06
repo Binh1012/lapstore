@@ -1,14 +1,18 @@
 let productData = [];
 
-const brandLogos = [
-  { name: 'Lenovo', file: 'lenovo.png' },
-  { name: 'Asus', file: 'asus.png' },
-  { name: 'HP', file: 'hp.png' },
-  { name: 'MSI', file: 'msi.png' },
-  { name: 'Dell', file: 'dell.png' }
-];
+// Quản lý độc lập trạng thái bộ lọc của từng phân khúc giá
+const segmentFilters = {
+  'segment-office': { ram: [], storage: [], cpu: [], gpu: [], needs: [] },
+  'segment-design': { ram: [], storage: [], cpu: [], gpu: [], needs: [] },
+  'segment-hiend': { ram: [], storage: [], cpu: [], gpu: [], needs: [] }
+};
 
-/* ===== DỮ LIỆU CHO FILTER BAR ===== */
+const segmentSorts = {
+  'segment-office': 'hot',
+  'segment-design': 'hot',
+  'segment-hiend': 'hot'
+};
+
 const needsTags = [
   { icon: '🎮', label: 'Chơi Game' },
   { icon: '💼', label: 'Văn Phòng - Học Tập' },
@@ -18,152 +22,56 @@ const needsTags = [
   { icon: '🗄️', label: 'Máy chủ server' }
 ];
 
-const priceRanges = [
-  { key: 'p1', label: 'Dưới 10 triệu',    min: 0,        max: 9999999  },
-  { key: 'p2', label: 'Từ 10 - 15 triệu', min: 10000000, max: 14999999 },
-  { key: 'p3', label: 'Từ 15 - 20 triệu', min: 15000000, max: 19999999 },
-  { key: 'p4', label: 'Từ 20 - 25 triệu', min: 20000000, max: 24999999 },
-  { key: 'p5', label: 'Từ 25 - 30 triệu', min: 25000000, max: 29999999 },
-  { key: 'p6', label: 'Trên 30 triệu',    min: 30000000, max: Infinity  }
-];
-
 const filterCriteria = [
   {
     key: 'ram',
     label: 'RAM',
     icon: '🧠',
-    options: [
-      { label: '4GB' }, { label: '8GB' },
-      { label: '16GB' }, { label: '32GB' },
-      { label: '64GB' }, { label: '96GB' },
-      { label: '128GB' }, { label: '256GB' }
-    ]
+    options: [{ label: '4GB' }, { label: '8GB' }, { label: '16GB' }, { label: '32GB' }, { label: '64GB' }]
   },
   {
     key: 'storage',
     label: 'Ổ Cứng',
     icon: '⚡',
-    options: [
-      { label: 'SSD 120GB' }, { label: 'SSD 128GB' },
-      { label: 'SSD 240GB' }, { label: 'SSD 256GB' },
-      { label: 'SSD 480GB' }, { label: 'SSD 512GB' },
-      { label: 'SSD 1TB' }, { label: 'SSD 2TB' },
-      { label: 'SSD 4TB' }, { label: 'HDD 1TB' }
-    ]
+    options: [{ label: 'SSD 120GB' }, { label: 'SSD 240GB' }, { label: 'SSD 256GB' }, { label: 'SSD 512GB' }, { label: 'SSD 1TB' }]
   },
   {
     key: 'cpu',
     label: 'CPU',
     icon: '💻',
-    options: [
-      { label: 'Intel® Core Ultra' }, { label: 'AMD Ryzen™ AI' },
-      { label: 'Intel® Core™' }, { label: 'Intel Xeon' },
-      { label: 'Intel Celeron' }, { label: 'Intel Pentium' },
-      { label: 'Intel Core i3' }, { label: 'Intel Core i5' },
-      { label: 'Intel Core i7' }, { label: 'Intel Core i9' },
-      { label: 'AMD Ryzen 3' }, { label: 'AMD Ryzen 5' },
-      { label: 'AMD Ryzen 7' }, { label: 'AMD Ryzen 9' }
-    ]
+    options: [{ label: 'Intel Core i3' }, { label: 'Intel Core i5' }, { label: 'Intel Core i7' }, { label: 'Intel Core i9' }, { label: 'AMD Ryzen 5' }, { label: 'AMD Ryzen 7' }]
   },
   {
     key: 'gpu',
     label: 'GPU',
     icon: '🎛️',
-    options: [
-      { label: 'NVIDIA T Series' }, { label: 'NVIDIA GeForce GTX Series' },
-      { label: 'NVIDIA GeForce RTX Series' }, { label: 'AMD Radeon RX Series' },
-      { label: 'AMD Radeon Pro Series' }, { label: 'Card đồ họa tích hợp (Onboard/iGPU)' },
-      { label: 'Intel Arc A-Series' }, { label: 'Nvidia RTX A-Series' },
-      { label: 'NVIDIA GT Series' }, { label: 'NVIDIA RTX Pro' }
-    ]
+    options: [{ label: 'NVIDIA GeForce GTX' }, { label: 'NVIDIA GeForce RTX' }, { label: 'AMD Radeon' }, { label: 'Tích hợp (iGPU)' }]
   }
 ];
 
-/* Định nghĩa phân khúc dựa theo khoảng giá */
 const priceSegments = [
-  {
-    key: 'segment-office',
-    title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN',
-    minPrice: 0,
-    maxPrice: 30000000,
-    banner: 'assets/img/banner-a.png'
-  },
-  {
-    key: 'segment-design',
-    title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM',
-    minPrice: 30000001,
-    maxPrice: 60000000,
-    banner: 'assets/img/banner-b.png'
-  },
-  {
-    key: 'segment-hiend',
-    title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP',
-    minPrice: 60000001,
-    maxPrice: Infinity,
-    banner: 'assets/img/banner-c.png'
-  }
+  { key: 'segment-office', title: 'PHÂN KHÚC KHỞI ĐẦU: HOÀN THIỆN GÓC MÁY CƠ BẢN', minPrice: 0, maxPrice: 30000000, banner: 'assets/img/banner-a.png' },
+  { key: 'segment-design', title: 'PHÂN KHÚC CHUYÊN NGHIỆP: NÂNG TẦM TRẢI NGHIỆM', minPrice: 30000001, maxPrice: 60000000, banner: 'assets/img/banner-b.png' },
+  { key: 'segment-hiend', title: 'PHÂN KHÚC HI-END & ĐẲNG CẤP DOANH NGHIỆP', minPrice: 60000001, maxPrice: Infinity, banner: 'assets/img/banner-c.png' }
 ];
 
 function getSegmentByPrice(price) {
   return priceSegments.find((seg) => price >= seg.minPrice && price < seg.maxPrice) || priceSegments[priceSegments.length - 1];
 }
 
-/* ===== RENDER FILTER BAR ===== */
-function renderPriceRangeRow() {
-  return `
-    <div class="price-range-row">
-      <span class="price-range-label">Khoảng giá:</span>
-      <div class="price-range-options">
-        ${priceRanges.map((r) => `
-          <button type="button" class="price-range-btn" data-price-key="${r.key}" data-min="${r.min}" data-max="${r.max === Infinity ? 'Infinity' : r.max}">
-            ${r.label}
-          </button>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
+/* ===== RENDER FILTER BAR THÔNG MINH ===== */
 function renderCriteriaPanel(segmentKey, criteria) {
   const panelId = `panel-${segmentKey}-${criteria.key}`;
   return `
     <div class="criteria-panel" id="${panelId}">
       <div class="criteria-options">
         ${criteria.options.map((opt) => `
-          <button type="button" class="criteria-option">
+          <button type="button" class="criteria-option" data-criteria="${criteria.key}" data-value="${opt.label}">
             ${opt.label}
           </button>
         `).join('')}
       </div>
-      <button type="button" class="apply-filter-btn">Xem kết quả</button>
-    </div>
-  `;
-}
-
-function renderCriteriaRow(segmentKey) {
-  return `
-    <div class="criteria-row">
-      ${filterCriteria.map((c) => `
-        <div class="criteria-dropdown">
-          <button type="button" class="criteria-toggle" onclick="toggleCriteriaPanel('panel-${segmentKey}-${c.key}')">
-            <span class="criteria-icon">${c.icon}</span> ${c.label} <span class="chevron">▾</span>
-          </button>
-          ${renderCriteriaPanel(segmentKey, c)}
-        </div>
-      `).join('')}
-    </div>
-  `;
-}
-
-function renderNeedsTags() {
-  return `
-    <div class="needs-row">
-      <span class="needs-label">Nhu cầu:</span>
-      ${needsTags.map((tag) => `
-        <button type="button" class="needs-tag">
-          ${tag.icon} ${tag.label}
-        </button>
-      `).join('')}
+      <button type="button" class="apply-filter-btn" onclick="applyCriteriaFilter('${segmentKey}')">Xem kết quả</button>
     </div>
   `;
 }
@@ -172,16 +80,32 @@ function renderFilterBar(segmentKey) {
   return `
     <div class="filter-bar">
       <div class="filter-criteria-row">
-        <div class="filter-section-label">Chọn theo tiêu chí:</div>
-        ${renderCriteriaRow(segmentKey)}
+        <div class="filter-section-label">Chọn tiêu chí:</div>
+        <div class="criteria-row">
+          ${filterCriteria.map((c) => `
+            <div class="criteria-dropdown">
+              <button type="button" class="criteria-toggle" onclick="toggleCriteriaPanel('panel-${segmentKey}-${c.key}', event)">
+                <span>${c.icon}</span> ${c.label} <span class="chevron">▾</span>
+              </button>
+              ${renderCriteriaPanel(segmentKey, c)}
+            </div>
+          `).join('')}
+        </div>
       </div>
-      ${renderNeedsTags()}
+      <div class="needs-row">
+        <span class="needs-label">Nhu cầu sử dụng:</span>
+        ${needsTags.map((tag) => `
+          <button type="button" class="needs-tag" data-need="${tag.label}" onclick="toggleNeedsTag('${segmentKey}', '${tag.label}', this)">
+            ${tag.icon} ${tag.label}
+          </button>
+        `).join('')}
+      </div>
     </div>
   `;
 }
 
-/* Mở / đóng panel tiêu chí */
-function toggleCriteriaPanel(panelId) {
+function toggleCriteriaPanel(panelId, event) {
+  event.stopPropagation();
   const panel = document.getElementById(panelId);
   if (!panel) return;
   const isOpen = panel.classList.contains('open');
@@ -189,35 +113,69 @@ function toggleCriteriaPanel(panelId) {
   if (!isOpen) panel.classList.add('open');
 }
 
-/* Toggle active state + đóng dropdown khi click ra ngoài */
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.criteria-dropdown')) {
-    document.querySelectorAll('.criteria-panel.open').forEach((p) => p.classList.remove('open'));
+function toggleNeedsTag(segmentKey, needLabel, element) {
+  element.classList.toggle('active');
+  const activeFilters = segmentFilters[segmentKey].needs;
+  const index = activeFilters.indexOf(needLabel);
+  if (index > -1) activeFilters.splice(index, 1);
+  else activeFilters.push(needLabel);
+  updateSegmentProducts(segmentKey);
+}
+
+function applyCriteriaFilter(segmentKey) {
+  document.querySelectorAll('.criteria-panel.open').forEach((p) => p.classList.remove('open'));
+  const segmentFrame = document.getElementById(segmentKey);
+  if (!segmentFrame) return;
+
+  segmentFilters[segmentKey].ram = [];
+  segmentFilters[segmentKey].storage = [];
+  segmentFilters[segmentKey].cpu = [];
+  segmentFilters[segmentKey].gpu = [];
+
+  segmentFrame.querySelectorAll('.criteria-option.active').forEach(btn => {
+    const type = btn.getAttribute('data-criteria');
+    const val = btn.getAttribute('data-value');
+    segmentFilters[segmentKey][type].push(val);
+  });
+
+  updateSegmentProducts(segmentKey);
+}
+
+/* ===== LOGIC LỌC VÀ SẮP XẾP SẢN PHẨM PHÂN KHÚC ===== */
+function updateSegmentProducts(segmentKey) {
+  const grid = document.querySelector(`#${segmentKey} .product-grid`);
+  if (!grid) return;
+
+  let filtered = productData.filter((item) => getSegmentByPrice(item.price).key === segmentKey);
+  const filters = segmentFilters[segmentKey];
+  
+  if (filters.ram.length > 0) filtered = filtered.filter(p => filters.ram.some(r => p.specs.some(s => s.toUpperCase().includes(r.toUpperCase()))));
+  if (filters.storage.length > 0) filtered = filtered.filter(p => filters.storage.some(st => p.specs.some(s => s.toUpperCase().includes(st.toUpperCase()))));
+  if (filters.cpu.length > 0) filtered = filtered.filter(p => filters.cpu.some(c => p.specs.some(s => s.toUpperCase().includes(c.toUpperCase()))));
+  if (filters.gpu.length > 0) filtered = filtered.filter(p => filters.gpu.some(g => p.specs.some(s => s.toUpperCase().includes(g.toUpperCase()))));
+
+  if (filters.needs.length > 0) {
+    filtered = filtered.filter(p => filters.needs.some(need => `${p.name} ${p.category || ''}`.toUpperCase().includes(need.toUpperCase())));
   }
 
-  const brandBtn = e.target.closest('.brand-logo-tab');
-  if (brandBtn) brandBtn.classList.toggle('active');
+  const sortType = segmentSorts[segmentKey];
+  if (sortType === 'asc') filtered.sort((a, b) => a.price - b.price);
+  else if (sortType === 'desc') filtered.sort((a, b) => b.price - a.price);
+  else filtered.sort((a, b) => (b.oldPrice ? b.oldPrice - b.price : 0) - (a.oldPrice ? a.oldPrice - a.price : 0));
 
-  const needsBtn = e.target.closest('.needs-tag');
-  if (needsBtn) needsBtn.classList.toggle('active');
+  grid.innerHTML = filtered.length === 0 
+    ? `<p style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 30px; font-size:13px;">Không có sản phẩm nào phù hợp với bộ lọc.</p>` 
+    : filtered.map((product) => renderProductCard(product)).join('');
+}
 
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.criteria-dropdown')) document.querySelectorAll('.criteria-panel.open').forEach((p) => p.classList.remove('open'));
   const optionBtn = e.target.closest('.criteria-option');
   if (optionBtn) optionBtn.classList.toggle('active');
-
-  /* Khoảng giá: toggle active, chỉ 1 nút active tại 1 thời điểm */
-  const priceBtn = e.target.closest('.price-range-btn');
-  if (priceBtn) {
-    const row = priceBtn.closest('.price-range-options');
-    row.querySelectorAll('.price-range-btn').forEach((b) => b.classList.remove('active'));
-    priceBtn.classList.toggle('active');
-  }
 });
 
 function formatPrice(value) {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND'
-  }).format(value).replace('₫', 'đ');
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value).replace('₫', 'đ');
 }
 
 function loadHeader() {
@@ -225,32 +183,13 @@ function loadHeader() {
   if (!headerContainer) return;
 
   fetch('header.html')
-    .then((response) => {
-      if (!response.ok) throw new Error('Không thể tải header');
-      return response.text();
-    })
-    .then((html) => {
-      headerContainer.innerHTML = html;
-    })
-    .catch((error) => {
-      console.error('Lỗi tải header:', error);
-    });
-}
-
-function normalizeBadges(rawBadges) {
-  const colorCycle = ['red', 'blue', 'yellow'];
-  return (rawBadges || []).map((text, index) => ({
-    type: colorCycle[index % colorCycle.length],
-    text
-  }));
-}
-
-function buildSpecs(raw) {
-  return [raw.cpu, raw.gpu, raw.ram, raw.storage, raw.display, raw.accessories]
-    .filter((value) => value && value.trim() !== '');
+    .then(res => res.ok ? res.text() : '')
+    .then(html => { headerContainer.innerHTML = html; })
+    .catch(err => console.error('Lỗi tải header:', err));
 }
 
 function normalizeProduct(raw, index) {
+  const colorCycle = ['red', 'blue'];
   return {
     id: index,
     name: raw.name,
@@ -259,215 +198,176 @@ function normalizeProduct(raw, index) {
     price: raw.price,
     oldPrice: raw.original_price && raw.original_price !== raw.price ? raw.original_price : null,
     image: raw.image,
-    os: raw.os || '',
-    aiBadge: false,
-    warrantyBadge: null,
-    badges: normalizeBadges(raw.badges),
+    badges: (raw.badges || []).map((text, i) => ({ type: colorCycle[i % colorCycle.length], text })),
     status: raw.status || 'Còn hàng',
-    specs: buildSpecs(raw),
-    giftCount: 0,
-    promoCount: 0,
-    configCount: 0,
+    // Gom tất cả thông số kỹ thuật thành mảng hoàn chỉnh
+    specs: [raw.cpu, raw.gpu, raw.ram, raw.storage].filter(v => v && v.trim() !== ''),
     rating: raw.rating != null ? raw.rating : 4.5,
     sold: raw.sold != null ? raw.sold : 0,
-    url: raw.url || ''
+    url: raw.url || '#'
   };
 }
 
 function loadProductData() {
   return fetch('assets/data/products.json')
-    .then((response) => {
-      if (!response.ok) throw new Error('Không thể tải dữ liệu sản phẩm');
-      return response.json();
-    })
-    .then((data) => {
-      productData = data.map((raw, index) => normalizeProduct(raw, index));
-    })
-    .catch((error) => {
-      console.error('Lỗi tải dữ liệu sản phẩm:', error);
-      productData = [];
-    });
+    .then(res => res.ok ? res.json() : [])
+    .then(data => { productData = data.map((raw, index) => normalizeProduct(raw, index)); })
+    .catch(() => { productData = []; });
 }
 
+/* ===== CAROUSEL FLASH SALE RESPONSIVE ĐA THIẾT BỊ ===== */
 let flashSaleCarouselIndex = 0;
 let flashSaleCarouselTimer = null;
 
 function initFlashSaleCarousel() {
   const grid = document.getElementById('flashsale-grid');
   const track = grid?.querySelector('.flashsale-track');
+  const prevBtn = grid?.querySelector('.flashsale-control-prev');
   const nextBtn = grid?.querySelector('.flashsale-control-next');
-
   if (!track) return;
 
-  const items = Array.from(track.children);
-  if (items.length <= 1) {
-    nextBtn?.setAttribute('disabled', 'true');
-    return;
-  }
-
-  const stepSizePercent = 25;
-
-  const updateCarousel = () => {
-    track.style.transform = `translateX(-${flashSaleCarouselIndex * stepSizePercent}%)`;
+  const totalItems = track.children.length;
+  
+  // Tự động nhận dạng số thẻ được hiển thị trên các màn hình khác nhau
+  const getVisibleItemsCount = () => {
+    if (window.innerWidth <= 580) return 1;
+    if (window.innerWidth <= 1024) return 2;
+    return 4;
   };
 
-  const goToNextItem = () => {
-    flashSaleCarouselIndex += 1;
+  const updateCarousel = () => {
+    const visibleCount = getVisibleItemsCount();
+    const maxSteps = totalItems - (visibleCount - 1);
+    if (flashSaleCarouselIndex >= maxSteps) flashSaleCarouselIndex = 0;
+    
+    const itemWidth = track.children[0].getBoundingClientRect().width + 12; 
+    track.style.transform = `translateX(-${flashSaleCarouselIndex * itemWidth}px)`;
+  };
+
+  const goToNext = () => {
+    const visibleCount = getVisibleItemsCount();
+    flashSaleCarouselIndex = (flashSaleCarouselIndex >= totalItems - visibleCount) ? 0 : flashSaleCarouselIndex + 1;
     updateCarousel();
   };
 
-  clearInterval(flashSaleCarouselTimer);
-  flashSaleCarouselIndex = 0;
-  updateCarousel();
+  const goToPrev = () => {
+    const visibleCount = getVisibleItemsCount();
+    flashSaleCarouselIndex = (flashSaleCarouselIndex <= 0) ? totalItems - visibleCount : flashSaleCarouselIndex - 1;
+    updateCarousel();
+  };
 
-  nextBtn?.addEventListener('click', goToNextItem);
+  nextBtn?.addEventListener('click', () => { goToNext(); restartTimer(); });
+  prevBtn?.addEventListener('click', () => { goToPrev(); restartTimer(); });
 
-  flashSaleCarouselTimer = window.setInterval(goToNextItem, 4000);
+  function restartTimer() {
+    clearInterval(flashSaleCarouselTimer);
+    flashSaleCarouselTimer = setInterval(goToNext, 4000);
+  }
+
+  restartTimer();
+  window.addEventListener('resize', updateCarousel);
 }
 
 function renderFlashSaleSection() {
   const grid = document.getElementById('flashsale-grid');
   if (!grid) return;
 
-  // Prefer products that have an oldPrice (discount) or promoCount, fall back to first items
-  const candidates = productData.filter((p) => p.oldPrice || p.promoCount > 0);
-  const items = (candidates.length ? candidates : productData).slice(0, 8);
-
-  if (!items.length) {
-    grid.innerHTML = '';
-    return;
-  }
-
-  const groups = [];
-  for (let index = 0; index < items.length; index += 4) {
-    groups.push(items.slice(index, index + 4));
-  }
-
-  const carouselItems = Array.from({ length: 8 }, () => items).flat();
+  const items = productData.filter((p) => p.oldPrice).slice(0, 8);
+  if (!items.length) return;
 
   grid.innerHTML = `
-    <div class="flashsale-controls">
-      <button type="button" class="flashsale-control flashsale-control-next" aria-label="Sản phẩm tiếp theo">›</button>
-    </div>
-    <div class="flashsale-track" data-total-steps="${carouselItems.length}">
-      ${carouselItems.map((p) => `
-        <div class="flashsale-slide-item">
-          ${renderProductCard(p)}
+    <div class="flashsale-grid-wrapper-relative">
+      <button type="button" class="flashsale-control flashsale-control-prev" aria-label="Trước">‹</button>
+      <button type="button" class="flashsale-control flashsale-control-next" aria-label="Sau">›</button>
+      <div class="flashsale-grid-window" style="overflow: hidden; width: 100%;">
+        <div class="flashsale-track" style="display: flex; gap: 12px; transition: transform 0.5s ease-in-out;">
+          ${items.map((p) => `
+            <div class="flashsale-slide-item" style="flex: 0 0 calc(25% - 9px); min-width: 200px; display: flex;">
+              ${renderProductCard(p, { hideSpecs: true })}
+            </div>
+          `).join('')}
         </div>
-      `).join('')}
+      </div>
     </div>
   `;
-
   initFlashSaleCarousel();
 }
 
-function renderBrandTabs() {
-  return `
-    <div class="brand-logo-tabs">
-      ${brandLogos.map((brand) => `
-        <button type="button" class="brand-logo-tab">
-          <img src="assets/img/logo/${brand.file}" alt="${brand.name}" />
-        </button>
-      `).join('')}
-    </div>
-  `;
-}
-
-function renderProductCard(product) {
-  const os = product.os || '';
-  const specs = product.specs || [];
-  const badges = product.badges || [];
-  const rating = product.rating != null ? product.rating : 4.5;
-  const sold = product.sold != null ? product.sold : 0;
-  const giftCount = product.giftCount || 0;
-  const promoCount = product.promoCount || 0;
-  const configCount = product.configCount || 0;
-  const warrantyBadge = product.warrantyBadge || null;
-  const aiBadge = Boolean(product.aiBadge);
-  const status = product.status || 'Còn hàng';
+function renderProductCard(product, options = {}) {
+  const hideSpecs = Boolean(options.hideSpecs);
+  const hasDiscount = Boolean(product.oldPrice && product.oldPrice > product.price);
+  const discountPercent = hasDiscount ? Math.round((1 - product.price / product.oldPrice) * 100) : 0;
+  const finalBadges = product.badges.length ? product.badges : (hasDiscount ? [{type:'red', text:'Trả góp 0%'}, {type:'blue', text:'Giảm sâu'}] : []);
 
   return `
     <article class="product-card">
-      <a class="product-card-link" href="${product.url || '#'}" target="_blank" rel="noopener">
+      <a class="product-card-link" href="${product.url}" target="_blank" rel="noopener">
         <div class="product-img">
+          <span class="sale-ribbon">SALE</span>
           <img src="${product.image}" alt="${product.name}" />
-          ${aiBadge ? `<span class="ai-badge" title="Tích hợp AI">AI</span>` : `<span class="cert-icon" aria-hidden="true">✅</span>`}
-          ${warrantyBadge ? `<span class="warranty-badge">🏆 ${warrantyBadge}<br />WARRANTY</span>` : (os ? `<span class="os-badge">🪟 ${os}</span>` : '')}
-          ${badges.length ? `
-            <div class="promo-badges">
-              ${badges.map((b) => `<span class="promo-badge promo-badge-${b.type}">${b.text}</span>`).join('')}
-            </div>
-          ` : ''}
+          ${hasDiscount ? `<span class="discount-badge">-${discountPercent}%</span>` : ''}
+          <div class="promo-badges">
+            ${finalBadges.map(b => `<span class="promo-badge promo-badge-${b.type}">${b.text}</span>`).join('')}
+          </div>
         </div>
         <div class="product-info">
           <h3>${product.name}</h3>
-          ${specs.length ? `
-            <div class="spec-chips">
-              ${specs.map((s) => `<span class="spec-chip">${s}</span>`).join('')}
+          ${hideSpecs
+            ? `<img src="assets/img/fl.png" alt="Flash Sale" class="flash-ticket-img" />`
+            : `<div class="spec-chips">${product.specs.map(s => `<span class="spec-chip">${s}</span>`).join('')}</div>`
+          }
+          <div class="product-bottom">
+            <div class="price-row">
+              <span class="product-price">${formatPrice(product.price)}</span>
+              ${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}
             </div>
-          ` : ''}
-          <div class="benefit-chips">
-            ${giftCount ? `<span class="benefit-chip">🎁 ${giftCount} QUÀ TẶNG</span>` : ''}
-            ${promoCount ? `<span class="benefit-chip">🏷️ ${promoCount} KHUYẾN MÃI</span>` : ''}
+            <div class="rating-row">
+              <span>⭐ ${product.rating} • Đã bán ${product.sold}</span>
+              <span class="stock-status">✓ ${product.status}</span>
+            </div>
           </div>
-          ${configCount ? `
-            <div class="benefit-chips">
-              <span class="benefit-chip">⚙️ ${configCount} CẤU HÌNH</span>
-            </div>
-          ` : ''}
-          <p class="product-price">
-            ${formatPrice(product.price)}
-            ${product.oldPrice ? `<span class="product-price-old">${formatPrice(product.oldPrice)}</span>` : ''}
-          </p>
-          <p class="rating-row">⭐ ${rating} • Đã bán ${sold}</p>
-          <p class="stock-status"><span class="stock-dot">✓</span> ${status}</p>
         </div>
       </a>
-      <button class="buy-btn" onclick="window.open('${product.url || '#'}', '_blank')">Mua ngay</button>
+      <button class="buy-btn" onclick="window.open('${product.url}', '_blank')">Mua ngay ⚡</button>
     </article>
   `;
 }
 
-/* Chia sản phẩm theo 3 phân khúc giá */
+function handleSortClick(segmentKey, type, element) {
+  element.closest('.sort-row').querySelectorAll('.sort-btn').forEach(btn => btn.style.borderColor = '#cbd5e1');
+  element.style.borderColor = 'var(--primary)';
+  segmentSorts[segmentKey] = type;
+  updateSegmentProducts(segmentKey);
+}
+
 function renderHome() {
   const container = document.getElementById('product-sections');
   if (!container) return;
 
   container.innerHTML = priceSegments.map((segment) => {
     const items = productData.filter((item) => getSegmentByPrice(item.price).key === segment.key);
-
     if (!items.length) return '';
 
     return `
       <section class="segment-frame" id="${segment.key}">
         <div class="segment-banner-frame">
-          ${segment.banner ? `<img src="${segment.banner}" alt="${segment.title}" />` : ''}
+          <img src="${segment.banner}" alt="${segment.title}" />
         </div>
         <div class="segment-divider"></div>
-
         <div class="segment-body">
           <div class="segment-header">
             <h2>${segment.title}</h2>
-            <a href="#top">Quay lên</a>
+            <a href="#top">Quay lên ▲</a>
           </div>
-
           ${renderFilterBar(segment.key)}
-
           <div class="sort-row">
-            <span class="sort-label">Sắp xếp:</span>
-            <button type="button" class="sort-btn">🔥 Khuyến mãi HOT</button>
-            <button type="button" class="sort-btn">↑ Giá Thấp - Cao</button>
-            <button type="button" class="sort-btn">↓ Giá Cao - Thấp</button>
+            <span class="sort-label">Sắp xếp theo:</span>
+            <button type="button" class="sort-btn" style="border-color: var(--primary);" onclick="handleSortClick('${segment.key}', 'hot', this)">🔥 Khuyến mãi HOT</button>
+            <button type="button" class="sort-btn" onclick="handleSortClick('${segment.key}', 'asc', this)">↑ Giá Thấp - Cao</button>
+            <button type="button" class="sort-btn" onclick="handleSortClick('${segment.key}', 'desc', this)">↓ Giá Cao - Thấp</button>
           </div>
-
-          <div class="product-grid-wrapper">
-            <div class="product-grid">
-              ${items.map((product) => renderProductCard(product)).join('')}
-            </div>
-          </div>
-
-          <div class="segment-view-all">
-            <a href="#" class="view-all-btn">Xem tất cả sản phẩm</a>
+          <div class="product-grid">
+            ${items.map((product) => renderProductCard(product)).join('')}
           </div>
         </div>
       </section>
@@ -475,18 +375,8 @@ function renderHome() {
   }).join('');
 }
 
-function initHeroBannerSlider() {
-  const slider = document.querySelector('.banner-slider');
-  if (!slider) return;
-}
-
-/* ===== ĐẾM NGƯỢC KHUYẾN MÃI ===== */
-// Đổi mốc kết thúc tại đây (định dạng: năm, tháng-1, ngày, giờ, phút, giây)
 const COUNTDOWN_END = new Date(2026, 8, 30, 23, 59, 0);
-
-function pad2(num) {
-  return String(num).padStart(2, '0');
-}
+function pad2(num) { return String(num).padStart(2, '0'); }
 
 function initCountdown() {
   const daysEl = document.getElementById('cd-days');
@@ -494,61 +384,28 @@ function initCountdown() {
   const minutesEl = document.getElementById('cd-minutes');
   const secondsEl = document.getElementById('cd-seconds');
   const endLabelEl = document.getElementById('cd-end-label');
-
-  if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+  if (!daysEl) return;
 
   if (endLabelEl) {
-    const hh = pad2(COUNTDOWN_END.getHours());
-    const mm = pad2(COUNTDOWN_END.getMinutes());
-    const dd = pad2(COUNTDOWN_END.getDate());
-    const mo = pad2(COUNTDOWN_END.getMonth() + 1);
-    const yyyy = COUNTDOWN_END.getFullYear();
-    endLabelEl.textContent = `${hh}:${mm} ngày ${dd}/${mo}/${yyyy}`;
+    endLabelEl.textContent = `${pad2(COUNTDOWN_END.getHours())}:${pad2(COUNTDOWN_END.getMinutes())} ngày ${pad2(COUNTDOWN_END.getDate())}/${pad2(COUNTDOWN_END.getMonth() + 1)}/${COUNTDOWN_END.getFullYear()}`;
   }
 
-  function tick() {
+  setInterval(() => {
     const diff = COUNTDOWN_END.getTime() - Date.now();
-
-    if (diff <= 0) {
-      daysEl.textContent = '00';
-      hoursEl.textContent = '00';
-      minutesEl.textContent = '00';
-      secondsEl.textContent = '00';
-      clearInterval(timer);
-      return;
-    }
-
+    if (diff <= 0) return;
     const totalSeconds = Math.floor(diff / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    daysEl.textContent = pad2(days);
-    hoursEl.textContent = pad2(hours);
-    minutesEl.textContent = pad2(minutes);
-    secondsEl.textContent = pad2(seconds);
-    // brief pulse effect on seconds change
-    secondsEl.classList.add('pulse');
-    setTimeout(() => secondsEl.classList.remove('pulse'), 600);
-  }
-
-  tick();
-  const timer = setInterval(tick, 1000);
+    daysEl.textContent = pad2(Math.floor(totalSeconds / 86400));
+    hoursEl.textContent = pad2(Math.floor((totalSeconds % 86400) / 3600));
+    minutesEl.textContent = pad2(Math.floor((totalSeconds % 3600) / 60));
+    secondsEl.textContent = pad2(totalSeconds % 60);
+  }, 1000);
 }
 
 window.addEventListener('DOMContentLoaded', () => {
   loadHeader();
-  initHeroBannerSlider();
   initCountdown();
-
   loadProductData().then(() => {
-    if (document.getElementById('product-sections')) {
-      renderHome();
-    }
-    // render flash sale block (shows up to 8 discounted products)
+    if (document.getElementById('product-sections')) renderHome();
     renderFlashSaleSection();
   });
-
-  // Banner and rule modal handlers removed per request
 });
