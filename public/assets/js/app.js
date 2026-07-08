@@ -279,10 +279,10 @@ function renderFlashSaleSection() {
     <div class="flashsale-grid-wrapper-relative">
       <button type="button" class="flashsale-control flashsale-control-prev" aria-label="Trước">‹</button>
       <button type="button" class="flashsale-control flashsale-control-next" aria-label="Sau">›</button>
-      <div class="flashsale-grid-window" style="overflow: hidden; width: 100%;">
-        <div class="flashsale-track" style="display: flex; gap: 12px; transition: transform 0.5s ease-in-out;">
+      <div class="flashsale-grid-window">
+        <div class="flashsale-track">
           ${items.map((p) => `
-            <div class="flashsale-slide-item" style="flex: 0 0 calc(25% - 9px); min-width: 200px; display: flex;">
+            <div class="flashsale-slide-item">
               ${renderProductCard(p, { hideSpecs: true })}
             </div>
           `).join('')}
@@ -313,7 +313,7 @@ function renderProductCard(product, options = {}) {
         <div class="product-info">
           <h3>${product.name}</h3>
           ${hideSpecs
-            ? `<img src="assets/img/fl.png" alt="Flash Sale" class="flash-ticket-img" />`
+            ? `<div class="flash-ticket-wrap"><img src="assets/img/fl.png" alt="Flash Sale" class="flash-ticket-img" /></div>`
             : `<div class="spec-chips">${product.specs.map(s => `<span class="spec-chip">${s}</span>`).join('')}</div>`
           }
           <div class="product-bottom">
@@ -355,10 +355,6 @@ function renderHome() {
         </div>
         <div class="segment-divider"></div>
         <div class="segment-body">
-          <div class="segment-header">
-            <h2>${segment.title}</h2>
-            <a href="#top">Quay lên ▲</a>
-          </div>
           ${renderFilterBar(segment.key)}
           <div class="sort-row">
             <span class="sort-label">Sắp xếp theo:</span>

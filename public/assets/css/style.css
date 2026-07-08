@@ -90,11 +90,41 @@ main { max-width: 960px; margin: 0 auto; padding: 0 24px 48px; }
 .spec-chip { padding: 1px 6px; border-radius: 4px; border: 1px solid #e2e8f0; font-size: 9px; color: #475569; background: #f1f5f9; }
 
 /* ===== NHÃN VÉ FLASH SALE (ảnh fl.png, thay cho spec-chips trong carousel Flash Sale) ===== */
+.flash-ticket-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  animation: ticketGlow 1.8s ease-in-out infinite;
+}
+
 .flash-ticket-img {
   width: 100%;
-  height: auto;
+  height: 34px;
+  object-fit: cover;
   border-radius: 6px;
   display: block;
+}
+
+.flash-ticket-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  animation: ticketShine 2.4s ease-in-out infinite;
+}
+
+@keyframes ticketGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(255, 0, 64, 0.35); transform: scale(1); }
+  50% { box-shadow: 0 0 14px rgba(255, 0, 64, 0.55); transform: scale(1.02); }
+}
+
+@keyframes ticketShine {
+  0% { left: -60%; }
+  60%, 100% { left: 130%; }
 }
 .product-bottom { margin-top: auto; padding-top: 6px; }
 .price-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px; margin-bottom: 2px; }
@@ -107,11 +137,43 @@ main { max-width: 960px; margin: 0 auto; padding: 0 24px 48px; }
 
 /* ===== FLASH SALE CAROUSEL ===== */
 .flashsale-section { margin: 20px 0; }
+
 .flashsale-grid-wrapper-relative { position: relative; width: 100%; padding: 0 32px; }
+
+/* Chỉ ẩn tràn theo chiều ngang, KHÔNG cắt bóng đổ / phóng to khi hover theo chiều dọc */
+.flashsale-grid-window { overflow-x: hidden; overflow-y: visible; width: 100%; }
+
+.flashsale-track {
+  display: flex;
+  gap: 12px;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Mặc định (desktop): hiển thị đúng 4 card, không dùng inline style nữa
+   nên media query bên dưới có thể ghi đè đúng theo từng màn hình */
+.flashsale-slide-item {
+  flex: 0 0 calc(25% - 9px);
+  min-width: 0;
+  display: flex;
+}
+
+.flashsale-slide-item .product-card {
+  width: 100%;
+  height: 100%;
+}
+
 .flashsale-control { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 28px; height: 28px; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; background: rgba(13,75,195,0.8); cursor: pointer; }
 .flashsale-control:hover { background: #0d4bc3; }
 .flashsale-control-prev { left: 0; }
 .flashsale-control-next { right: 0; }
+
+@media (max-width: 1024px) {
+  .flashsale-slide-item { flex: 0 0 calc(50% - 6px); }
+}
+
+@media (max-width: 580px) {
+  .flashsale-slide-item { flex: 0 0 100%; }
+}
 
 .footer { text-align: center; padding: 20px; color: var(--muted); background: #eef2f7; font-size: 12px; }
 
